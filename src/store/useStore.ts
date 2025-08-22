@@ -84,6 +84,14 @@ const mockOrders: Order[] = [
   }
 ];
 
+// Helper function to convert date strings back to Date objects
+const deserializeOrder = (order: any): Order => ({
+  ...order,
+  createdAt: new Date(order.createdAt),
+  updatedAt: new Date(order.updatedAt),
+  estimatedDelivery: order.estimatedDelivery ? new Date(order.estimatedDelivery) : undefined
+});
+
 export const useStore = create<AppState>()(
   persist(
     (set, get) => ({
@@ -183,7 +191,12 @@ export const useStore = create<AppState>()(
         orders: state.orders,
         couriers: state.couriers,
         language: state.language
-      })
+      }),
+      onRehydrateStorage: () => (state) => {
+        if (state?.orders) {
+          state.orders = state.orders.map(deserializeOrder);
+        }
+      }
     }
   )
 );
