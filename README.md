@@ -1,1 +1,2 @@
-Last update!
+npm install --force
+npm run dev
